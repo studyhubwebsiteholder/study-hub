@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Hub - Learning Portal</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4CAF50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .main-box {
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-area {
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        #urlInput {
+            flex: 1;
+            padding: 25px 30px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.15rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #333;
+        }
+
+        #urlInput:focus {
+            outline: none;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            background: white;
+        }
+
+        #urlInput::placeholder {
+            color: #999;
+        }
+
+        .btn {
+            padding: 25px 50px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .engines {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .engine-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .engine-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .engine-btn.active {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .proxy-container {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .proxy-container.active {
+            display: block;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        #proxyFrame {
+            width: 100%;
+            height: 75vh;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.18);
+            padding: 35px 25px;
+            border-radius: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-link::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .quick-link:hover::before {
+            left: 100%;
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .link-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .link-name {
+            font-weight: 800;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .settings-box {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 35px;
+            border-radius: 22px;
+            margin-top: 35px;
+        }
+
+        .settings-header {
+            font-size: 1.8rem;
+            margin-bottom: 28px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateX(8px);
+        }
+
+        .setting-text {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .toggle {
+            width: 70px;
+            height: 35px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 18px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.on {
+            background: var(--success);
+        }
+
+        .toggle-ball {
+            width: 31px;
+            height: 31px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle.on .toggle-ball {
+            left: 37px;
+        }
+
+        .games-area {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .games-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .game-box {
+            background: rgba(255, 255, 255, 0.18);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .game-box:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-emoji {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .game-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.85;
+            margin-top: 50px;
+        }
+
+        .status {
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .status.loading {
+            background: rgba(255, 152, 0, 0.3);
+            border: 2px solid var(--warning);
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 2px solid var(--error);
+        }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid var(--success);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .logo { font-size: 3.5rem; }
+            .main-box { padding: 30px 20px; }
+            .input-group { flex-direction: column; }
+            .quick-links { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">🚀</div>
+            <h1>Study Hub</h1>
+            <p class="tagline">Your Gateway to Unlimited Learning</p>
+        </header>
+
+        <div class="main-box">
+            <div class="search-area">
+                <div class="input-group">
+                    <input type="text" id="urlInput" placeholder="Enter website URL or search..." autocomplete="off">
+                    <button class="btn" onclick="navigate()">🔥 GO</button>
+                </div>
+
+                <div id="status" class="status"></div>
+
+                <div class="engines">
+                    <div class="engine-btn active" data-engine="google">Google</div>
+                    <div class="engine-btn" data-engine="bing">Bing</div>
+                    <div class="engine-btn" data-engine="duckduckgo">DuckDuckGo</div>
+                    <div class="engine-btn" data-engine="brave">Brave</div>
+                </div>
+            </div>
+
+            <div class="proxy-container" id="proxyContainer">
+                <div class="toolbar">
+                    <button class="tool-btn" onclick="goBack()">← Back</button>
+                    <button class="tool-btn" onclick="goForward()">Forward →</button>
+                    <button class="tool-btn" onclick="reload()">🔄 Reload</button>
+                    <button class="tool-btn" onclick="goHome()">🏠 Home</button>
+                    <button class="tool-btn" onclick="fullscreen()">⛶ Fullscreen</button>
+                </div>
+                <iframe id="proxyFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+            </div>
+
+            <div class="quick-links" id="quickLinks">
+                <div class="quick-link" onclick="quickLoad('https://www.youtube.com')">
+                    <span class="link-icon">📺</span>
+                    <div class="link-name">YouTube</div>
+                </div>
+                <div class="quick-link" onclick="quickLoad('https://discord.com/app')">
+                    <span class="link-icon">💬</span>
+                    <div class="link-name">Discord</div>
+                </div>
+                <div class="quick-link" onclick="quickLoad('https://www.reddit.com')">
+                    <span class="link-icon">📱</span>
+                    <div class="link-name">Reddit</div>
+                </div>
+                <div class="quick-link" onclick="quickLoad('https://twitter.com')">
+                    <span class="link-icon">🐦</span>
+                    <div class="link-name">Twitter</div>
+                </div>
+                <div class="quick-link" onclick="quickLoad('https://www.twitch.tv')">
+                    <span class="link-icon">🎮</span>
+                    <div class="link-name">Twitch</div>
+                </div>
+                <div class="quick-link" onclick="quickLoad('https://www.github.com')">
+                    <span class="link-icon">💻</span>
+                    <div class="link-name">GitHub</div>
+                </div>
+            </div>
+
+            <div class="games-area">
+                <div class="games-title">🎮 Quick Access Games</div>
+                <div class="games-grid">
+                    <div class="game-box" onclick="quickLoad('https://poki.com')">
+                        <div class="game-emoji">🎯</div>
+                        <div class="game-title">Poki</div>
+                    </div>
+                    <div class="game-box" onclick="quickLoad('https://www.crazygames.com')">
+                        <div class="game-emoji">🎲</div>
+                        <div class="game-title">Crazy Games</div>
+                    </div>
+                    <div class="game-box" onclick="quickLoad('https://www.coolmathgames.com')">
+                        <div class="game-emoji">🧮</div>
+                        <div class="game-title">Cool Math</div>
+                    </div>
+                    <div class="game-box" onclick="quickLoad('https://krunker.io')">
+                        <div class="game-emoji">🔫</div>
+                        <div class="game-title">Krunker</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-box">
+                <div class="settings-header">
+                    ⚙️ Privacy Settings
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-text">🎭 Tab Cloaking (Disguise Tab)</div>
+                    <div class="toggle" id="cloakToggle" onclick="toggleCloak()">
+                        <div class="toggle-ball"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-text">🔒 Panic Key (Press ESC)</div>
+                    <div class="toggle on" id="panicToggle" onclick="togglePanic()">
+                        <div class="toggle-ball"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.1rem; margin-bottom: 10px;">Built with 💜 for Students</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">Use responsibly • Educational purposes only</p>
+        </footer>
+    </div>
+
+    <script>
+        // Create starfield effect
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // State management
+        let currentEngine = 'google';
+        let cloakEnabled = false;
+        let panicEnabled = true;
+        let currentUrl = '';
+
+        const engines = {
+            google: 'https://www.google.com/search?q=',
+            bing: 'https://www.bing.com/search?q=',
+            duckduckgo: 'https://duckduckgo.com/?q=',
+            brave: 'https://search.brave.com/search?q='
+        };
+
+        // Engine selection
+        document.querySelectorAll('.engine-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentEngine = this.dataset.engine;
+            });
+        });
+
+        // Enter key support
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') navigate();
+        });
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status show ' + type;
+            if (type !== 'loading') {
+                setTimeout(() => status.classList.remove('show'), 4000);
+            }
+        }
+
+        function navigate() {
+            let input = document.getElementById('urlInput').value.trim();
+            if (!input) return;
+
+            let url;
+            
+            // Determine if URL or search
+            if (input.match(/^https?:\/\//)) {
+                url = input;
+            } else if (input.includes('.') && !input.includes(' ')) {
+                url = 'https://' + input;
+            } else {
+                url = engines[currentEngine] + encodeURIComponent(input);
+            }
+
+            currentUrl = url;
+            loadProxy(url);
+        }
+
+        function quickLoad(url) {
+            document.getElementById('urlInput').value = url;
+            currentUrl = url;
+            loadProxy(url);
+        }
+
+        function loadProxy(url) {
+            showStatus('🔄 Loading content...', 'loading');
+            
+            // Hide quick links, show proxy
+            document.getElementById('quickLinks').style.display = 'none';
+            document.querySelector('.games-area').style.display = 'none';
+            document.getElementById('proxyContainer').classList.add('active');
+
+            const frame = document.getElementById('proxyFrame');
+            
+            // Using AllOrigins as a simple CORS proxy
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+            
+            frame.src = proxyUrl;
+            
+            frame.onload = function() {
+                showStatus('✅ Content loaded successfully!', 'success');
+            };
+            
+            frame.onerror = function() {
+                showStatus('❌ Failed to load. Try a different site or proxy method.', 'error');
+            };
+        }
+
+        function goBack() {
+            try {
+                document.getElementById('proxyFrame').contentWindow.history.back();
+            } catch(e) {
+                showStatus('⚠️ Cannot go back in this frame', 'error');
+            }
+        }
+
+        function goForward() {
+            try {
+                document.getElementById('proxyFrame').contentWindow.history.forward();
+            } catch(e) {
+                showStatus('⚠️ Cannot go forward in this frame', 'error');
+            }
+        }
+
+        function reload() {
+            const frame = document.getElementById('proxyFrame');
+            showStatus('🔄 Reloading...', 'loading');
+            frame.src = frame.src;
+        }
+
+        function goHome() {
+            document.getElementById('proxyContainer').classList.remove('active');
+            document.getElementById('quickLinks').style.display = 'grid';
+            document.querySelector('.games-area').style.display = 'block';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('status').classList.remove('show');
+        }
+
+        function fullscreen() {
+            const frame = document.getElementById('proxyFrame');
+            if (frame.requestFullscreen) {
+                frame.requestFullscreen();
+            } else if (frame.webkitRequestFullscreen) {
+                frame.webkitRequestFullscreen();
+            } else if (frame.msRequestFullscreen) {
+                frame.msRequestFullscreen();
+            }
+        }
+
+        function toggleCloak() {
+            const toggle = document.getElementById('cloakToggle');
+            cloakEnabled = !cloakEnabled;
+            toggle.classList.toggle('on');
+            
+            if (cloakEnabled) {
+                document.title = 'Classes';
+                document.querySelector('link[rel="icon"]').href = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKRSURBVFiFxZdLaBNRFIa/O5M0bZrErFSwYKF0oVgQFwUXKm5c6MKFj4UgCCIuXLhQcOVCEVGhUBeuRBeCCC58gAtBKIqgIFJQqlgfilKLVWP6yqTJZDIzx0WmJjN3JplJQf/dzz3n/OfeOffcC8soInIWOA5sA9qAFNAHvAQ6VXVB7jLCeRGZFZFpEXGqLC8i90VkYzmP1A2UWCitlRKwpxqBE0ClQfEZYCewD9gJVJw8tgKHgEdVCFQ8mOvj6zOsn57h5fgYdx6OYXf3YSRNPf4TcAHoAlqBU8CCh/d12aWo6ivgh4ffAuA/qKrPgSPATmNF8p+dT8nnQ7xPfOO7XcKJOqTXgHn5uaI0T/h98AYwE8lQlFIwgTmj94AngD2L3/sAJH82TepjguT7KSa6UsQHM6goZmLC0P8CDXPhAYBQpxVjNIfT9ZP0hznmBwvM9f0i1vWL+MAscGUZP9/oKfIm4M/xsrD/dCOpng8Hv1CcL+C0WJjNCaB5qQ3vHU0bFEuQxXlpYx1MMNk9S3l+nu+DE8wNfKDcZGHFQji9Bc+5YIvhb+7G/SfQ4MXhWqJUKoUfTiZ/iEa/YTRrxBu3RbDiEUaejlBOTNGwL8rGG6881veHRv4F9M5l4nQ+SJD+lKAlFiZ8ZCPrbkRIf0ry7fKIL/6ogzPF7wDzQzmSH2dY1xGh+dRmGvdHSX+c4e1Zn4KoKsXvT7k4Ufnwu6Y9y8+kj6PAmCp+h52uCLqjyOp1J/6vEATg1x27+22K/ytCAH7u2J0vk/8/IQTA944ddzUCRpyqajwFr5A4pqp+O+s1IYBvqnoI6AR+esi8VdX9Hus1IQBAVbuBXcDluFdXVQ3XKBBsZbwCTOjfKpgCXgATqjrzDw9+1OfQ5PwWAAAAAElFTkSuQmCC';
+                showStatus('🎭 Tab cloaking enabled!', 'success');
+            } else {
+                document.title = 'Study Hub - Learning Portal';
+                document.querySelector('link[rel="icon"]').href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>";
+                showStatus('🎭 Tab cloaking disabled', 'success');
+            }
+        }
+
+        function togglePanic() {
+            const toggle = document.getElementById('panicToggle');
+            panicEnabled = !panicEnabled;
+            toggle.classList.toggle('on');
+            showStatus(panicEnabled ? '🔒 Panic key enabled' : '🔒 Panic key disabled', 'success');
+        }
+
+        // Panic key handler
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && panicEnabled) {
+                window.location.href = 'https://classroom.google.com';
+            }
+        });
+
+        // Focus input on load
+        document.getElementById('urlInput').focus();
+
+        // Prevent iframe clickjacking
+        if (window.top !== window.self) {
+            window.top.location = window.self.location;
+        }
+
+        // Handle iframe messages (for advanced features)
+        window.addEventListener('message', function(e) {
+            // Security: validate origin
+            console.log('Message received:', e.data);
+        });
+
+        // Add service worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw-cache.js').then(function() {
+                console.log('Cache service worker registered');
+            }).catch(function(err) {
+                console.log('SW registration failed:', err);
+            });
+        }
+
+        // Easter egg: Konami code
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.key);
+            konamiCode = konamiCode.slice(-10);
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                showStatus('🎮 KONAMI CODE ACTIVATED! You are a legend!', 'success');
+                document.body.style.animation = 'rainbow 2s infinite';
+            }
+        });
+
+        // Auto-save last visited URL
+        window.addEventListener('beforeunload', function() {
+            if (currentUrl) {
+                localStorage.setItem('lastUrl', currentUrl);
+            }
+        });
+
+        // Restore last URL on load
+        window.addEventListener('load', function() {
+            const lastUrl = localStorage.getItem('lastUrl');
+            if (lastUrl) {
+                document.getElementById('urlInput').value = lastUrl;
+            }
+        });
+
+        // Add rainbow animation for easter egg
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rainbow {
+                0% { filter: hue-rotate(0deg); }
+                100% { filter: hue-rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
